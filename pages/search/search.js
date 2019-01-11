@@ -1,6 +1,9 @@
 const api = require('../../utils/api.js')
 const songs = require('../../utils/song.js')
 const app = getApp().globalData
+
+const hotSearchNum = 10;  // 手动设置显示的热搜个数
+
 Page({
   data: {
     hotSearch: [],
@@ -17,20 +20,24 @@ Page({
       if (res2.code === 0) {
         let hotArr = res2.data.hotkey
         this.setData({
-          hotSearch: hotArr.length > 10 ? hotArr.slice(0, 10) : hotArr
+          hotSearch: hotArr.length > hotSearchNum ? hotArr.slice(0, hotSearchNum) : hotArr
         })
       }
     }).catch((err) => {
       console.log(err)
     })
   },
+  // 进行搜索
   searchAction: function (event) {
-    const keyWrod = event.detail.value || event.currentTarget.dataset.txt
-    api.search(keyWrod).then((res) => {
+    const keyWord = event.detail.value || event.currentTarget.dataset.txt
+    const type = event.type   // 区分是按回车的搜索，还是输入过程中的自动搜索
+    api.search(keyWord).then((res) => {
       let res1 = res.data.replace('SmartboxKeysCallbackmod_top_search3847(', '')
       let res2 = JSON.parse(res1.substring(0, res1.length - 1))
       this.dealData(res2.data)
-      this.dealHistroySearch(keyWrod)
+      if(type != 'input'){   // 在输入过程中的字段，不进行历史记录
+        this.dealHistroySearch(keyWord)
+      }
     }).catch((res) => {
       console.log(res)
     })
@@ -56,25 +63,25 @@ Page({
       })
     }
   },
-  dealHistroySearch: function (keyWrod) {
+  dealHistroySearch: function (keyWord) {
     let histroy
     try {
       let local = wx.getStorageSync('histroySearch')
       if (local) {
         histroy = local
-        if (keyWrod && local.indexOf(keyWrod) < 0) {
-          local.push(keyWrod)
+        if (keyWord && local.indexOf(keyWord) < 0) {
+          local.push(keyWord)
           wx.setStorage({
             key: "histroySearch",
             data: local
           })
         }
       } else {
-        if (keyWrod) {
-          histroy = [keyWrod]
+        if (keyWord) {
+          histroy = [keyWord]
           wx.setStorage({
             key: "histroySearch",
-            data: [keyWrod]
+            data: [keyWord]
           })
         }
       }

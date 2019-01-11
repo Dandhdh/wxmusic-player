@@ -12,7 +12,7 @@
   "window":{
     "backgroundTextStyle":"dark",
     "navigationBarBackgroundColor": "#222",
-    "navigationBarTitleText": "乐听Music",
+    "navigationBarTitleText": "一个人听",
     "navigationBarTextStyle":"white"
   },
   "tabBar": {

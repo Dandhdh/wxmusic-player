@@ -45,7 +45,7 @@ Page({
       }
     })
   },
-  /*组装成需要的歌手列表数据*/
+  /* 组装成需要的歌手列表数据 */
   _normallizeSinger:function(list) {
     let map = {
       hot: {
@@ -53,6 +53,7 @@ Page({
         items: []
       }
     }
+    // 这里的list按热度排序了的
     list.forEach((item,index)=>{
       if(index < HOT_SINGER_LEN) {
         map.hot.items.push(new Singer(item.Fsinger_name, item.Fsinger_mid))

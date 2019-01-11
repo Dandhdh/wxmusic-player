@@ -79,8 +79,6 @@ Page({
         if (res.statusCode === 200) {
           var res1 = res.data.replace("callback(", "")
           var res2 = JSON.parse(res1.replace(")", ""))
-          console.log('推荐歌曲：')
-          console.log(res2)
           _that.setData({
             slider: res2.data.slider,
             songList: res2.data.songList
@@ -141,8 +139,6 @@ Page({
     api.getTopList().then((res) => {
       var res1 = res.data.replace('jp1(', '')
       var res2 = JSON.parse(res1.substring(0, res1.length - 1))
-      console.log("巅峰榜: ")
-      console.log(res2)
       this.setData({
         topList: res2.data.topList
       })

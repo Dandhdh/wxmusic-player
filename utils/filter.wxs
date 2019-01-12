@@ -1,0 +1,12 @@
+// 将歌手列表，拼凑成一个字符串
+var formatSingers = function (data) {
+  var singers = ''
+  for (var i = 0; i < arguments[0].length; i++){
+    singers = singers + arguments[0][i].name + ' / '
+  }
+  return singers.substring(0, singers.length-3)
+}
+
+module.exports = {
+  formatSingers: formatSingers
+}

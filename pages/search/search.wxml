@@ -8,7 +8,7 @@
            confirm-type="search"
            bindconfirm="searchSongAction"
            bindinput="searchAction"/>
-    <view class="button">搜索</view>
+    <view class="button" bindtap="searchSongAction">搜索</view>
   </view>
   <view class="main">
     <view class="hot-wrapper">

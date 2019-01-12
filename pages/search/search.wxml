@@ -1,10 +1,12 @@
+<wxs src="../../utils/filter.wxs" module="util" />
+
 <view class="search-page">
   <view class="search-wrapper">
     <input class="search" placeholder="输入歌手名、歌曲名搜索"
            placeholder-style="color: #ffcd32;" auto-focus
            placeholder-class="placeholder"
            confirm-type="search"
-           bindconfirm="searchAction"
+           bindconfirm="searchSongAction"
            bindinput="searchAction"/>
     <view class="button">搜索</view>
   </view>
@@ -43,9 +45,15 @@
       </view>
     </view>
     <view class="song-wrapper">
-      <view class="item" wx:for="{{songs}}" data-mid="{{item.mid}}"
+      <view class="item" wx:for="{{songs}}" wx:key="{{index}}" data-mid="{{item.mid}}" data-songname="{{item.name}} - {{item.singer}}"
             bindtap="selectSong">
         {{item.name}} - {{item.singer}}
+      </view>
+    </view>
+    <view class="song-wrapper">
+      <view class="item" wx:for="{{songsResult}}" wx:key="{{index}}" data-mid="{{item.mid}}" data-songname="{{item.name}} - {{item.singer}}"
+            bindtap="selectSong">
+        {{item.title}} - {{util.formatSingers(item.singer)}}
       </view>
     </view>
   </scroll-view>

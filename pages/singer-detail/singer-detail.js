@@ -20,8 +20,6 @@ Page({
       console.log(res)
       var res1 = res.data.replace("callback(", "")
       var res2 = res1.substring(0, res1.length - 1)
-      console.log("res2")
-      console.log(res2)
       let ret = this._normallizeSongs(JSON.parse(res2).data.list)
       let nowData = this.data.songs
       nowData.length > 0 ? nowData = nowData.concat(ret) : nowData = ret

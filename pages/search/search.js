@@ -7,7 +7,11 @@ const hotSearchNum = 10;  // 手动设置显示的热搜个数
 Page({
   data: {
     hotSearch: [],
-    result: false
+    result: false,
+    singers:[],     // 输入时查询到的歌手
+    songs:[],       // 输入时查询的歌曲
+    songsResult:[],  // confirm后查询的歌曲
+    totalNum:0   // 单曲查询结果的总数量
   },
   onLoad: function () {
     this._getHotSearch()
@@ -27,17 +31,30 @@ Page({
       console.log(err)
     })
   },
-  // 进行搜索
+  // 快速搜索（在搜索框数据期间进行的搜索）
   searchAction: function (event) {
     const keyWord = event.detail.value || event.currentTarget.dataset.txt
-    const type = event.type   // 区分是按回车的搜索，还是输入过程中的自动搜索
+    // const type = event.type   // 区分是按回车的搜索，还是输入过程中的自动搜索
     api.search(keyWord).then((res) => {
       let res1 = res.data.replace('SmartboxKeysCallbackmod_top_search3847(', '')
       let res2 = JSON.parse(res1.substring(0, res1.length - 1))
       this.dealData(res2.data)
-      if(type != 'input'){   // 在输入过程中的字段，不进行历史记录
-        this.dealHistroySearch(keyWord)
-      }
+    }).catch((res) => {
+      console.log(res)
+    })
+  },
+
+  // 单曲详细搜索
+  searchSongAction: function(event){
+    const keyWord = event.detail.value || event.currentTarget.dataset.txt
+    const _this = this
+    api.searchSong(keyWord).then((res) => {
+      // console.log(res.data)
+      _this.setData({
+        totalNum: res.data.data.song.totalnum
+      })
+      this.dealHistroySearch(keyWord)
+      this.dealSongData(res.data.data.song.list)
     }).catch((res) => {
       console.log(res)
     })
@@ -63,7 +80,24 @@ Page({
       })
     }
   },
-  dealHistroySearch: function (keyWord) {
+  dealSongData: function (data) {
+    console.log(data)
+    if (data) {
+      this.setData({
+        result: true
+      })
+      this.setData({
+        singers: [],
+        songs: [],
+        songsResult:data
+      })
+    } else {
+      this.setData({
+        result: false
+      })
+    }
+  },
+  dealHistroySearch: function (keyWord,mid) {
     let histroy
     try {
       let local = wx.getStorageSync('histroySearch')
@@ -88,9 +122,11 @@ Page({
     } catch (e) {
       console.log(e)
     }
-    this.setData({
-      histroySearch: histroy.reverse()
-    })
+    if (histroy){
+      this.setData({
+        histroySearch: histroy.reverse()
+      })
+    }
   },
   deleteHistroySearch: function (event) {
     const keyWord = event.currentTarget.dataset.txt
@@ -112,12 +148,15 @@ Page({
     app.selectsinger.id = detail.id
     app.selectsinger.avatar = `https://y.gtimg.cn/music/photo_new/T001R300x300M000${app.selectsinger.id}.jpg?max_age=2592000`
     app.selectsinger.name = detail.name
+    this.dealHistroySearch(detail.name)  // 存到历史记录
     wx.navigateTo({
       url: '/pages/singer-detail/singer-detail'
     })
   },
   selectSong: function (event) {
     const mid = event.currentTarget.dataset.mid
+    const songname = event.currentTarget.dataset.songname
+    // this.dealHistroySearch(songname,mid)  // 存到历史记录，看个人产品设计，是否需要缓存
     api.getSongDetails(mid).then((res) => {
       var res1 = res.data.replace('getOneSongInfoCallback(', '')
       var res2 = JSON.parse(res1.substring(0, res1.length - 1)).data[0]

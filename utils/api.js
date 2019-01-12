@@ -58,7 +58,7 @@ const search = (key) => {
 
 // 歌手名、歌曲名搜索
 //https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&qqmusic_ver=1298&new_json=1&remoteplace=txt.yqq.song&searchid=66496436100067947&t=0&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&p=1&n=20&w=我们&g_tk=0&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0
-const searchSong = (key) => {
+const searchSong = (key,page) => {
   return new Promise((resolve, reject) => {
     wx.request({
       url: `https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&qqmusic_ver=1298&new_json=1&remoteplace=txt.yqq.song&searchid=66496436100067947&t=0&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&p=1&n=20&w=${key}&g_tk=699536588&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0`,
@@ -73,7 +73,7 @@ const searchSong = (key) => {
         catZhida: 1,
         lossless: 0,
         flag_qc: 0,
-        p: 1,   // 当前查询的页面
+        p: page,   // 当前查询的页面
         n: 20,  // 每页的记录数
         w: key,
         g_tk: 699536588,

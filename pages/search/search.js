@@ -12,26 +12,23 @@ Page({
     songs:[],       // 输入时查询的歌曲
     songsResult:[],  // confirm后查询的歌曲
     totalNum:0,   // 单曲查询结果的总数量
-    keyWord:''
+    keyWord:'',
+    curpage:1
   },
   onLoad: function () {
     this._getHotSearch()
     this.dealHistroySearch()
   },
   _getHotSearch: function () {
-    console.log('热搜')
     api.getHotSearch().then((res) => {
       let res1 = res.data.replace('hotSearchKeysmod_top_search(', '')
       let res2 = JSON.parse(res1.substring(0, res1.length - 1))
       if (res2.code === 0) {
         let hotArr = res2.data.hotkey
-        console.log(this.data.hotSearch)
         this.setData({
           hotSearch: hotArr.length > hotSearchNum ? hotArr.slice(0, hotSearchNum) : hotArr
         })
-        console.log(this.data.hotSearch)
       }
-      console.log('2')
     }).catch((err) => {
       console.log(err)
     })
@@ -52,8 +49,6 @@ Page({
         console.log(res)
       })
     }else{
-      this._getHotSearch()
-      this.dealHistroySearch()
       this.setData({
         result:false
       })
@@ -65,9 +60,10 @@ Page({
   searchSongAction: function(event){
     const keyWord = event.detail.value || event.currentTarget.dataset.txt || this.data.keyWord
     const _this = this
-    api.searchSong(keyWord).then((res) => {
+    api.searchSong(keyWord,this.data.curpage).then((res) => {
       // console.log(res.data)
       _this.setData({
+        curpage:1,   // 这里需要注意
         totalNum: res.data.data.song.totalnum
       })
       this.dealHistroySearch(keyWord)
@@ -193,5 +189,24 @@ Page({
         url: '/pages/player/player'
       })
     }).catch(() => {})
+  },
+  getMoreSongs: function(event){
+    console.log("加载更多")
+    const _this = this
+    this.setData({
+      curpage:this.data.curpage+1
+    })
+    console.log('当前页数',this.data.curpage)
+    if (this.data.songsResult.length >= this.data.totalNum){
+      return
+    }
+    api.searchSong(this.data.keyWord, this.data.curpage).then((res) => {
+      //console.log(res.data.data.song.list)
+      _this.setData({
+        songsResult: _this.data.songsResult.concat(res.data.data.song.list)
+      })
+    }).catch((res) => {
+      console.log(res)
+    })
   }
 })

@@ -78,7 +78,8 @@
 .search-result-wrapper {
     width: 100%;
     position: fixed;
-    height: 100%;
+    /*  height: 100% */
+    height: 92%;
     top: 95rpx;
     background: #222;
     padding: 0 50rpx;
@@ -100,4 +101,7 @@
 .search-result-wrapper .song-wrapper .item {
     height: 70rpx;
     line-height: 70rpx;
+}
+.loading-container{
+  width: 83%
 }

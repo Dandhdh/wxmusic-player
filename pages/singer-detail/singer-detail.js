@@ -40,6 +40,7 @@ Page({
   },
   /*上拉加载更多歌曲*/
   childEvent: function (e) {
+    console.log('加载更多')
     console.log(e)
     this.getSingerDetail(app.globalData.selectsinger.id, e.detail)
   }
